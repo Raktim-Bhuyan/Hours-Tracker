@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Work Hours Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        table { width: 100%; max-width: 600px; margin: auto; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #f4f4f4; }
+        button { margin-top: 10px; padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Weekly Work Hours Tracker</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Punch In</th>
+                <th>Punch Out</th>
+                <th>Hours Worked</th>
+            </tr>
+        </thead>
+        <tbody id="timeEntries">
+            <script>
+                const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                document.write(days.map(day => `
+                    <tr>
+                        <td>${day}</td>
+                        <td><input type="time" class="punch-in"></td>
+                        <td><input type="time" class="punch-out"></td>
+                        <td class="hours-worked">0</td>
+                    </tr>
+                `).join(''));
+            </script>
+        </tbody>
+    </table>
+    <button onclick="calculateHours()">Calculate</button>
+    <h3>Total Hours Worked: <span id="totalHours">0</span> / 42</h3>
+    <h3>Remaining Hours: <span id="remainingHours">42</span></h3>
+    
+    <script>
+        function calculateHours() {
+            let totalHours = 0;
+            document.querySelectorAll('#timeEntries tr').forEach(row => {
+                const punchIn = row.querySelector('.punch-in').value;
+                const punchOut = row.querySelector('.punch-out').value;
+                const hoursWorkedCell = row.querySelector('.hours-worked');
+                
+                if (punchIn && punchOut) {
+                    const inTime = new Date(`1970-01-01T${punchIn}:00`);
+                    const outTime = new Date(`1970-01-01T${punchOut}:00`);
+                    let worked = (outTime - inTime) / (1000 * 60 * 60);
+                    worked = worked > 0 ? worked : 0;
+                    hoursWorkedCell.textContent = worked.toFixed(2);
+                    totalHours += worked;
+                }
+            });
+            document.getElementById('totalHours').textContent = totalHours.toFixed(2);
+            document.getElementById('remainingHours').textContent = (42 - totalHours).toFixed(2);
+        }
+    </script>
+</body>
+</html>
